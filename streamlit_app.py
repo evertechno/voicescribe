@@ -1,8 +1,8 @@
 import streamlit as st
 import requests
-import os
 import time
 from datetime import datetime
+import os
 
 # Set up Hugging Face API details
 API_URL = "https://api-inference.huggingface.co/models/openai/whisper-large-v3-turbo"
@@ -37,33 +37,25 @@ st.write("Upload an audio file, and this app will transcribe it using OpenAI Whi
 file_types = ["wav", "flac", "mp3", "m4a", "ogg", "webm", "aac"]
 uploaded_file = st.file_uploader("Upload your audio file", type=file_types)
 
-# Feature 2: Displaying file size and type info
+# Ensure the file is uploaded before accessing its attributes
 if uploaded_file is not None:
+    # Feature 2: Display file size and type info
     st.write(f"File name: {uploaded_file.name}")
     st.write(f"File type: {uploaded_file.type}")
     st.write(f"File size: {round(uploaded_file.size / 1024, 2)} KB")
 
-# Feature 3: Show file upload progress bar
-if uploaded_file is not None:
+    # Feature 3: Show file upload progress bar
     st.progress(0.5)
 
-# Feature 4: Add instructions for file upload
-st.markdown("""
-**Instructions:**
-1. Choose an audio file (e.g., .mp3, .wav, .flac, etc.).
-2. Wait for the transcription process to complete.
-3. Download the transcribed text.
-""")
+    # Feature 4: Add instructions for file upload
+    st.markdown("""
+    **Instructions:**
+    1. Choose an audio file (e.g., .mp3, .wav, .flac, etc.).
+    2. Wait for the transcription process to complete.
+    3. Download the transcribed text.
+    """)
 
-# Feature 5: Audio duration info
-if uploaded_file is not None:
-    import pydub
-    audio = pydub.AudioSegment.from_file(uploaded_file)
-    duration = round(audio.duration_seconds, 2)
-    st.write(f"Audio duration: {duration} seconds")
-
-# Feature 6: Error Handling - API and Upload Errors
-if uploaded_file is not None:
+    # Feature 6: Error Handling - API and Upload Errors
     st.info("Transcribing audio... Please wait.")
     try:
         result = transcribe_audio(uploaded_file)
@@ -102,8 +94,7 @@ if uploaded_file is not None:
         st.error(f"Error in transcribing audio. Please try again. Details: {result['error']}")
 
     # Feature 13: Display audio waveform visualization
-    if uploaded_file is not None:
-        st.audio(uploaded_file, format="audio/mp3", start_time=0)
+    st.audio(uploaded_file, format="audio/mp3", start_time=0)
 
     # Feature 14: Play back the uploaded file after transcription
     st.audio(uploaded_file, format="audio/mp3")
@@ -175,7 +166,6 @@ st.markdown(f"[Download from Cloud]({cloud_storage_link})")
 # Feature 25: Provide additional metadata (e.g., speaker separation, timestamps, etc.)
 if "text" in result:
     st.write(f"Transcription Metadata:")
-    st.write(f"- Duration: {duration} seconds")
     st.write(f"- Language: {lang}")
     st.write(f"- Number of Words: {len(result['text'].split())}")
 
